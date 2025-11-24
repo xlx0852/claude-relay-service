@@ -659,6 +659,278 @@
         </div>
       </div>
 
+      <!-- 统一API使用教程 (Windows) -->
+      <div class="mb-8">
+        <h4
+          class="mb-3 flex items-center text-lg font-semibold text-gray-800 dark:text-gray-300 sm:mb-4 sm:text-xl"
+        >
+          <i class="fas fa-plug mr-2 text-purple-600 sm:mr-3" />
+          统一API使用教程（所有平台通用）
+        </h4>
+        <div
+          class="rounded-xl border border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50 p-4 dark:border-purple-500/40 dark:from-purple-950/30 dark:to-pink-950/30 sm:p-6"
+        >
+          <p class="mb-4 text-sm text-gray-700 dark:text-gray-300 sm:text-base">
+            本服务支持多种 AI 平台的统一 API 接入，包括 Claude、Gemini、OpenAI (Codex) 等。
+          </p>
+
+          <!-- API 端点说明 -->
+          <div class="mb-6">
+            <h5 class="mb-3 text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
+              📡 API 端点列表
+            </h5>
+            <div class="space-y-3">
+              <div
+                class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="font-mono text-sm font-bold text-purple-600 dark:text-purple-400"
+                    >/claude</span
+                  >
+                  <span
+                    class="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                    >Claude账户</span
+                  >
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  使用 Claude 官方账户池，支持 Claude Code 和其他 Anthropic API 客户端
+                </p>
+              </div>
+
+              <div
+                class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="font-mono text-sm font-bold text-green-600 dark:text-green-400"
+                    >/gemini</span
+                  >
+                  <span
+                    class="rounded bg-green-100 px-2 py-1 text-xs text-green-700 dark:bg-green-900 dark:text-green-300"
+                    >Gemini账户</span
+                  >
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  使用 Google Gemini 账户池，支持 Gemini CLI 和标准 Gemini API
+                </p>
+              </div>
+
+              <div
+                class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="font-mono text-sm font-bold text-blue-600 dark:text-blue-400"
+                    >/openai</span
+                  >
+                  <span
+                    class="rounded bg-indigo-100 px-2 py-1 text-xs text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300"
+                    >OpenAI/Codex</span
+                  >
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  使用 OpenAI Responses (Codex) 账户，支持 Codex CLI 和 OpenAI 格式 API
+                </p>
+              </div>
+
+              <div
+                class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="font-mono text-sm font-bold text-orange-600 dark:text-orange-400"
+                    >/droid/claude</span
+                  >
+                  <span
+                    class="rounded bg-orange-100 px-2 py-1 text-xs text-orange-700 dark:bg-orange-900 dark:text-orange-300"
+                    >Droid Claude</span
+                  >
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  使用 Droid (Factory.ai) 类型 Claude 账户，仅建议 Droid CLI 使用
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 使用示例 -->
+          <div class="mb-6">
+            <h5 class="mb-3 text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
+              💡 使用示例
+            </h5>
+
+            <!-- Cherry Studio 配置 -->
+            <details
+              class="mb-3 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+              open
+            >
+              <summary
+                class="cursor-pointer p-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 sm:p-4 sm:text-base"
+              >
+                🍒 Cherry Studio 配置
+              </summary>
+              <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+                <div class="space-y-3">
+                  <div>
+                    <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Claude 接入：
+                    </p>
+                    <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                      <p>• 供应商类型：选择 "Claude"</p>
+                      <p>
+                        • API 地址：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >http://你的服务器:3000/claude</code
+                        >
+                      </p>
+                      <p>
+                        • API Key：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >cr_xxxxxxxx</code
+                        >
+                        (后台创建)
+                      </p>
+                      <p class="text-yellow-600 dark:text-yellow-400">
+                        ⚠️ 重要：不要加结尾 /，让 Cherry Studio 自动加上 v1
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Gemini 接入：
+                    </p>
+                    <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                      <p>• 供应商类型：选择 "Gemini"</p>
+                      <p>
+                        • API 地址：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >http://你的服务器:3000/gemini</code
+                        >
+                      </p>
+                      <p>
+                        • API Key：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >cr_xxxxxxxx</code
+                        >
+                        (后台创建)
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Codex 接入：
+                    </p>
+                    <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                      <p>• 供应商类型：选择 "Openai-Response"</p>
+                      <p>
+                        • API 地址：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >http://你的服务器:3000/openai</code
+                        >
+                      </p>
+                      <p>
+                        • API Key：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >cr_xxxxxxxx</code
+                        >
+                        (后台创建)
+                      </p>
+                      <p>
+                        • 模型 ID：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >gpt-5</code
+                        >
+                        (固定)
+                      </p>
+                      <p class="text-yellow-600 dark:text-yellow-400">
+                        ⚠️ 注意：Codex 只支持 Openai-Response 标准
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Cursor IDE 配置 -->
+            <details
+              class="mb-3 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+            >
+              <summary
+                class="cursor-pointer p-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 sm:p-4 sm:text-base"
+              >
+                ✏️ Cursor IDE 配置
+              </summary>
+              <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+                <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  <p>1. 打开 Cursor 设置 (Settings)</p>
+                  <p>2. 找到 Models 选项</p>
+                  <p>3. 添加 Custom Model：</p>
+                  <div class="ml-4 space-y-1">
+                    <p>
+                      • Base URL:
+                      <code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                        >http://你的服务器:3000/claude/v1</code
+                      >
+                    </p>
+                    <p>
+                      • API Key:
+                      <code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                        >cr_xxxxxxxx</code
+                      >
+                    </p>
+                    <p>
+                      • Model:
+                      <code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                        >claude-3-5-sonnet-20241022</code
+                      >
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- cURL API 调用 -->
+            <details
+              class="mb-3 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+            >
+              <summary
+                class="cursor-pointer p-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 sm:p-4 sm:text-base"
+              >
+                🔧 cURL API 调用示例
+              </summary>
+              <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+                <div
+                  class="overflow-x-auto rounded-lg bg-gray-900 p-3 font-mono text-xs text-green-400 sm:p-4 sm:text-sm"
+                >
+                  <div class="mb-2 text-gray-400"># Claude API 调用</div>
+                  <div class="text-gray-300">
+                    curl -X POST http://你的服务器:3000/claude/v1/messages \
+                  </div>
+                  <div class="text-gray-300">-H "Content-Type: application/json" \</div>
+                  <div class="text-gray-300">-H "anthropic-version: 2023-06-01" \</div>
+                  <div class="text-gray-300">-H "x-api-key: cr_xxxxxxxx" \</div>
+                  <div class="text-gray-300">-d '{</div>
+                  <div class="text-gray-300">"model": "claude-3-5-sonnet-20241022",</div>
+                  <div class="text-gray-300">"max_tokens": 1024,</div>
+                  <div class="text-gray-300">"messages": [</div>
+                  <div class="text-gray-300">{"role": "user", "content": "Hello!"}</div>
+                  <div class="text-gray-300">]</div>
+                  <div class="text-gray-300">}'</div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- 重要提示 -->
+          <div
+            class="rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3 dark:bg-blue-950/30 sm:p-4"
+          >
+            <div class="flex items-start">
+              <i class="fas fa-info-circle mr-2 mt-1 text-blue-600 dark:text-blue-400"></i>
+              <div class="text-xs text-gray-700 dark:text-gray-300 sm:text-sm">
+                <p class="mb-2 font-semibold">重要提示：</p>
+                <ul class="list-inside list-disc space-y-1">
+                  <li>确保后台已添加对应类型的账号（Claude/Gemini/Codex等）</li>
+                  <li>API Key 可以通用，系统会根据路由自动选择账号类型</li>
+                  <li>建议为不同用户创建不同的 API Key 便于使用统计</li>
+                  <li>所有 API Key 都在后台 "API Keys" 页面统一创建和管理</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Windows 故障排除 -->
       <div class="mb-8">
         <h4
@@ -1312,6 +1584,278 @@
         </div>
       </div>
 
+      <!-- 统一API使用教程 (macOS) -->
+      <div class="mb-8">
+        <h4
+          class="mb-3 flex items-center text-lg font-semibold text-gray-800 dark:text-gray-300 sm:mb-4 sm:text-xl"
+        >
+          <i class="fas fa-plug mr-2 text-purple-600 sm:mr-3" />
+          统一API使用教程（所有平台通用）
+        </h4>
+        <div
+          class="rounded-xl border border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50 p-4 dark:border-purple-500/40 dark:from-purple-950/30 dark:to-pink-950/30 sm:p-6"
+        >
+          <p class="mb-4 text-sm text-gray-700 dark:text-gray-300 sm:text-base">
+            本服务支持多种 AI 平台的统一 API 接入，包括 Claude、Gemini、OpenAI (Codex) 等。
+          </p>
+
+          <!-- API 端点说明 -->
+          <div class="mb-6">
+            <h5 class="mb-3 text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
+              📡 API 端点列表
+            </h5>
+            <div class="space-y-3">
+              <div
+                class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="font-mono text-sm font-bold text-purple-600 dark:text-purple-400"
+                    >/claude</span
+                  >
+                  <span
+                    class="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                    >Claude账户</span
+                  >
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  使用 Claude 官方账户池，支持 Claude Code 和其他 Anthropic API 客户端
+                </p>
+              </div>
+
+              <div
+                class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="font-mono text-sm font-bold text-green-600 dark:text-green-400"
+                    >/gemini</span
+                  >
+                  <span
+                    class="rounded bg-green-100 px-2 py-1 text-xs text-green-700 dark:bg-green-900 dark:text-green-300"
+                    >Gemini账户</span
+                  >
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  使用 Google Gemini 账户池，支持 Gemini CLI 和标准 Gemini API
+                </p>
+              </div>
+
+              <div
+                class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="font-mono text-sm font-bold text-blue-600 dark:text-blue-400"
+                    >/openai</span
+                  >
+                  <span
+                    class="rounded bg-indigo-100 px-2 py-1 text-xs text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300"
+                    >OpenAI/Codex</span
+                  >
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  使用 OpenAI Responses (Codex) 账户，支持 Codex CLI 和 OpenAI 格式 API
+                </p>
+              </div>
+
+              <div
+                class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="font-mono text-sm font-bold text-orange-600 dark:text-orange-400"
+                    >/droid/claude</span
+                  >
+                  <span
+                    class="rounded bg-orange-100 px-2 py-1 text-xs text-orange-700 dark:bg-orange-900 dark:text-orange-300"
+                    >Droid Claude</span
+                  >
+                </div>
+                <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  使用 Droid (Factory.ai) 类型 Claude 账户，仅建议 Droid CLI 使用
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 使用示例 -->
+          <div class="mb-6">
+            <h5 class="mb-3 text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
+              💡 使用示例
+            </h5>
+
+            <!-- Cherry Studio 配置 -->
+            <details
+              class="mb-3 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+              open
+            >
+              <summary
+                class="cursor-pointer p-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 sm:p-4 sm:text-base"
+              >
+                🍒 Cherry Studio 配置
+              </summary>
+              <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+                <div class="space-y-3">
+                  <div>
+                    <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Claude 接入：
+                    </p>
+                    <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                      <p>• 供应商类型：选择 "Claude"</p>
+                      <p>
+                        • API 地址：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >http://你的服务器:3000/claude</code
+                        >
+                      </p>
+                      <p>
+                        • API Key：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >cr_xxxxxxxx</code
+                        >
+                        (后台创建)
+                      </p>
+                      <p class="text-yellow-600 dark:text-yellow-400">
+                        ⚠️ 重要：不要加结尾 /，让 Cherry Studio 自动加上 v1
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Gemini 接入：
+                    </p>
+                    <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                      <p>• 供应商类型：选择 "Gemini"</p>
+                      <p>
+                        • API 地址：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >http://你的服务器:3000/gemini</code
+                        >
+                      </p>
+                      <p>
+                        • API Key：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >cr_xxxxxxxx</code
+                        >
+                        (后台创建)
+                      </p>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Codex 接入：
+                    </p>
+                    <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                      <p>• 供应商类型：选择 "Openai-Response"</p>
+                      <p>
+                        • API 地址：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >http://你的服务器:3000/openai</code
+                        >
+                      </p>
+                      <p>
+                        • API Key：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >cr_xxxxxxxx</code
+                        >
+                        (后台创建)
+                      </p>
+                      <p>
+                        • 模型 ID：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >gpt-5</code
+                        >
+                        (固定)
+                      </p>
+                      <p class="text-yellow-600 dark:text-yellow-400">
+                        ⚠️ 注意：Codex 只支持 Openai-Response 标准
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- Cursor IDE 配置 -->
+            <details
+              class="mb-3 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+            >
+              <summary
+                class="cursor-pointer p-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 sm:p-4 sm:text-base"
+              >
+                ✏️ Cursor IDE 配置
+              </summary>
+              <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+                <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                  <p>1. 打开 Cursor 设置 (Settings)</p>
+                  <p>2. 找到 Models 选项</p>
+                  <p>3. 添加 Custom Model：</p>
+                  <div class="ml-4 space-y-1">
+                    <p>
+                      • Base URL:
+                      <code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                        >http://你的服务器:3000/claude/v1</code
+                      >
+                    </p>
+                    <p>
+                      • API Key:
+                      <code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                        >cr_xxxxxxxx</code
+                      >
+                    </p>
+                    <p>
+                      • Model:
+                      <code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                        >claude-3-5-sonnet-20241022</code
+                      >
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </details>
+
+            <!-- cURL API 调用 -->
+            <details
+              class="mb-3 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+            >
+              <summary
+                class="cursor-pointer p-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 sm:p-4 sm:text-base"
+              >
+                🔧 cURL API 调用示例
+              </summary>
+              <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+                <div
+                  class="overflow-x-auto rounded-lg bg-gray-900 p-3 font-mono text-xs text-green-400 sm:p-4 sm:text-sm"
+                >
+                  <div class="mb-2 text-gray-400"># Claude API 调用</div>
+                  <div class="text-gray-300">
+                    curl -X POST http://你的服务器:3000/claude/v1/messages \
+                  </div>
+                  <div class="text-gray-300">-H "Content-Type: application/json" \</div>
+                  <div class="text-gray-300">-H "anthropic-version: 2023-06-01" \</div>
+                  <div class="text-gray-300">-H "x-api-key: cr_xxxxxxxx" \</div>
+                  <div class="text-gray-300">-d '{</div>
+                  <div class="text-gray-300">"model": "claude-3-5-sonnet-20241022",</div>
+                  <div class="text-gray-300">"max_tokens": 1024,</div>
+                  <div class="text-gray-300">"messages": [</div>
+                  <div class="text-gray-300">{"role": "user", "content": "Hello!"}</div>
+                  <div class="text-gray-300">]</div>
+                  <div class="text-gray-300">}'</div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- 重要提示 -->
+          <div
+            class="rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3 dark:bg-blue-950/30 sm:p-4"
+          >
+            <div class="flex items-start">
+              <i class="fas fa-info-circle mr-2 mt-1 text-blue-600 dark:text-blue-400"></i>
+              <div class="text-xs text-gray-700 dark:text-gray-300 sm:text-sm">
+                <p class="mb-2 font-semibold">重要提示：</p>
+                <ul class="list-inside list-disc space-y-1">
+                  <li>确保后台已添加对应类型的账号（Claude/Gemini/Codex等）</li>
+                  <li>API Key 可以通用，系统会根据路由自动选择账号类型</li>
+                  <li>建议为不同用户创建不同的 API Key 便于使用统计</li>
+                  <li>所有 API Key 都在后台 "API Keys" 页面统一创建和管理</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- macOS 故障排除 -->
       <div class="mb-8">
         <h4
@@ -1949,6 +2493,278 @@
                   <div class="whitespace-nowrap text-gray-300">cd /path/to/your/project</div>
                   <div class="mb-2 mt-2"># 启动 Claude Code</div>
                   <div class="whitespace-nowrap text-gray-300">claude</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 统一API使用教程 -->
+        <div class="mb-8">
+          <h4
+            class="mb-3 flex items-center text-lg font-semibold text-gray-800 dark:text-gray-300 sm:mb-4 sm:text-xl"
+          >
+            <i class="fas fa-plug mr-2 text-purple-600 sm:mr-3" />
+            统一API使用教程（所有平台通用）
+          </h4>
+          <div
+            class="rounded-xl border border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50 p-4 dark:border-purple-500/40 dark:from-purple-950/30 dark:to-pink-950/30 sm:p-6"
+          >
+            <p class="mb-4 text-sm text-gray-700 dark:text-gray-300 sm:text-base">
+              本服务支持多种 AI 平台的统一 API 接入，包括 Claude、Gemini、OpenAI (Codex) 等。
+            </p>
+
+            <!-- API 端点说明 -->
+            <div class="mb-6">
+              <h5 class="mb-3 text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
+                📡 API 端点列表
+              </h5>
+              <div class="space-y-3">
+                <div
+                  class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+                >
+                  <div class="mb-2 flex items-center justify-between">
+                    <span class="font-mono text-sm font-bold text-purple-600 dark:text-purple-400"
+                      >/claude</span
+                    >
+                    <span
+                      class="rounded bg-blue-100 px-2 py-1 text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                      >Claude账户</span
+                    >
+                  </div>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                    使用 Claude 官方账户池，支持 Claude Code 和其他 Anthropic API 客户端
+                  </p>
+                </div>
+
+                <div
+                  class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+                >
+                  <div class="mb-2 flex items-center justify-between">
+                    <span class="font-mono text-sm font-bold text-green-600 dark:text-green-400"
+                      >/gemini</span
+                    >
+                    <span
+                      class="rounded bg-green-100 px-2 py-1 text-xs text-green-700 dark:bg-green-900 dark:text-green-300"
+                      >Gemini账户</span
+                    >
+                  </div>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                    使用 Google Gemini 账户池，支持 Gemini CLI 和标准 Gemini API
+                  </p>
+                </div>
+
+                <div
+                  class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+                >
+                  <div class="mb-2 flex items-center justify-between">
+                    <span class="font-mono text-sm font-bold text-blue-600 dark:text-blue-400"
+                      >/openai</span
+                    >
+                    <span
+                      class="rounded bg-indigo-100 px-2 py-1 text-xs text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300"
+                      >OpenAI/Codex</span
+                    >
+                  </div>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                    使用 OpenAI Responses (Codex) 账户，支持 Codex CLI 和 OpenAI 格式 API
+                  </p>
+                </div>
+
+                <div
+                  class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4"
+                >
+                  <div class="mb-2 flex items-center justify-between">
+                    <span class="font-mono text-sm font-bold text-orange-600 dark:text-orange-400"
+                      >/droid/claude</span
+                    >
+                    <span
+                      class="rounded bg-orange-100 px-2 py-1 text-xs text-orange-700 dark:bg-orange-900 dark:text-orange-300"
+                      >Droid Claude</span
+                    >
+                  </div>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                    使用 Droid (Factory.ai) 类型 Claude 账户，仅建议 Droid CLI 使用
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 使用示例 -->
+            <div class="mb-6">
+              <h5 class="mb-3 text-base font-semibold text-gray-800 dark:text-gray-200 sm:text-lg">
+                💡 使用示例
+              </h5>
+
+              <!-- Cherry Studio 配置 -->
+              <details
+                class="mb-3 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+                open
+              >
+                <summary
+                  class="cursor-pointer p-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 sm:p-4 sm:text-base"
+                >
+                  🍒 Cherry Studio 配置
+                </summary>
+                <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+                  <div class="space-y-3">
+                    <div>
+                      <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Claude 接入：
+                      </p>
+                      <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                        <p>• 供应商类型：选择 "Claude"</p>
+                        <p>
+                          • API 地址：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                            >http://你的服务器:3000/claude</code
+                          >
+                        </p>
+                        <p>
+                          • API Key：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                            >cr_xxxxxxxx</code
+                          >
+                          (后台创建)
+                        </p>
+                        <p class="text-yellow-600 dark:text-yellow-400">
+                          ⚠️ 重要：不要加结尾 /，让 Cherry Studio 自动加上 v1
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Gemini 接入：
+                      </p>
+                      <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                        <p>• 供应商类型：选择 "Gemini"</p>
+                        <p>
+                          • API 地址：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                            >http://你的服务器:3000/gemini</code
+                          >
+                        </p>
+                        <p>
+                          • API Key：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                            >cr_xxxxxxxx</code
+                          >
+                          (后台创建)
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Codex 接入：
+                      </p>
+                      <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                        <p>• 供应商类型：选择 "Openai-Response"</p>
+                        <p>
+                          • API 地址：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                            >http://你的服务器:3000/openai</code
+                          >
+                        </p>
+                        <p>
+                          • API Key：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                            >cr_xxxxxxxx</code
+                          >
+                          (后台创建)
+                        </p>
+                        <p>
+                          • 模型 ID：<code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                            >gpt-5</code
+                          >
+                          (固定)
+                        </p>
+                        <p class="text-yellow-600 dark:text-yellow-400">
+                          ⚠️ 注意：Codex 只支持 Openai-Response 标准
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+              <!-- Cursor IDE 配置 -->
+              <details
+                class="mb-3 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+              >
+                <summary
+                  class="cursor-pointer p-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 sm:p-4 sm:text-base"
+                >
+                  ✏️ Cursor IDE 配置
+                </summary>
+                <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+                  <div class="space-y-2 text-xs text-gray-600 dark:text-gray-400 sm:text-sm">
+                    <p>1. 打开 Cursor 设置 (Settings)</p>
+                    <p>2. 找到 Models 选项</p>
+                    <p>3. 添加 Custom Model：</p>
+                    <div class="ml-4 space-y-1">
+                      <p>
+                        • Base URL:
+                        <code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >http://你的服务器:3000/claude/v1</code
+                        >
+                      </p>
+                      <p>
+                        • API Key:
+                        <code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >cr_xxxxxxxx</code
+                        >
+                      </p>
+                      <p>
+                        • Model:
+                        <code class="rounded bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                          >claude-3-5-sonnet-20241022</code
+                        >
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+              <!-- cURL API 调用 -->
+              <details
+                class="mb-3 rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+              >
+                <summary
+                  class="cursor-pointer p-3 text-sm font-medium text-gray-800 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 sm:p-4 sm:text-base"
+                >
+                  🔧 cURL API 调用示例
+                </summary>
+                <div class="px-3 pb-3 sm:px-4 sm:pb-4">
+                  <div
+                    class="overflow-x-auto rounded-lg bg-gray-900 p-3 font-mono text-xs text-green-400 sm:p-4 sm:text-sm"
+                  >
+                    <div class="mb-2 text-gray-400"># Claude API 调用</div>
+                    <div class="text-gray-300">
+                      curl -X POST http://你的服务器:3000/claude/v1/messages \
+                    </div>
+                    <div class="text-gray-300">-H "Content-Type: application/json" \</div>
+                    <div class="text-gray-300">-H "anthropic-version: 2023-06-01" \</div>
+                    <div class="text-gray-300">-H "x-api-key: cr_xxxxxxxx" \</div>
+                    <div class="text-gray-300">-d '{</div>
+                    <div class="text-gray-300">"model": "claude-3-5-sonnet-20241022",</div>
+                    <div class="text-gray-300">"max_tokens": 1024,</div>
+                    <div class="text-gray-300">"messages": [</div>
+                    <div class="text-gray-300">{"role": "user", "content": "Hello!"}</div>
+                    <div class="text-gray-300">]</div>
+                    <div class="text-gray-300">}'</div>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <!-- 重要提示 -->
+            <div
+              class="rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3 dark:bg-blue-950/30 sm:p-4"
+            >
+              <div class="flex items-start">
+                <i class="fas fa-info-circle mr-2 mt-1 text-blue-600 dark:text-blue-400"></i>
+                <div class="text-xs text-gray-700 dark:text-gray-300 sm:text-sm">
+                  <p class="mb-2 font-semibold">重要提示：</p>
+                  <ul class="list-inside list-disc space-y-1">
+                    <li>确保后台已添加对应类型的账号（Claude/Gemini/Codex等）</li>
+                    <li>API Key 可以通用，系统会根据路由自动选择账号类型</li>
+                    <li>建议为不同用户创建不同的 API Key 便于使用统计</li>
+                    <li>所有 API Key 都在后台 "API Keys" 页面统一创建和管理</li>
+                  </ul>
                 </div>
               </div>
             </div>
