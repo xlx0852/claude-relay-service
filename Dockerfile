@@ -24,11 +24,14 @@ LABEL maintainer="claude-relay-service@example.com"
 LABEL description="Claude Code API Relay Service"
 LABEL version="1.0.0"
 
-# 🔧 安装系统依赖
+# 🔧 安装系统依赖（包含 better-sqlite3 编译所需）
 RUN apk add --no-cache \
     curl \
     dumb-init \
     sed \
+    python3 \
+    make \
+    g++ \
     && rm -rf /var/cache/apk/*
 
 # 📁 设置工作目录
@@ -37,8 +40,8 @@ WORKDIR /app
 # 📦 复制 package 文件
 COPY package*.json ./
 
-# 🔽 安装依赖 (生产环境)
-RUN npm ci --only=production && \
+# 🔽 安装依赖 (生产环境) - 设置 Python 路径
+RUN npm ci --only=production --python=python3 && \
     npm cache clean --force
 
 # 📋 复制应用代码
