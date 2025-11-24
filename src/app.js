@@ -15,6 +15,7 @@ const cacheMonitor = require('./utils/cacheMonitor')
 // Import routes
 const apiRoutes = require('./routes/api')
 const unifiedRoutes = require('./routes/unified')
+const unifiedChatCompletionsRoutes = require('./routes/unifiedChatCompletions')
 const adminRoutes = require('./routes/admin')
 const webRoutes = require('./routes/web')
 const apiStatsRoutes = require('./routes/apiStats')
@@ -63,6 +64,10 @@ class Application {
 
       // 📊 初始化缓存监控
       await this.initializeCacheMonitoring()
+
+      // 🔄 初始化翻译器注册表
+      logger.info('🔄 Initializing translator registry...')
+      require('./translators') // 自动注册所有翻译器
 
       // 🔧 初始化管理员凭据
       logger.info('🔄 Initializing admin credentials...')
@@ -256,6 +261,10 @@ class Application {
       }
 
       // 🛣️ 路由
+
+      // 🌐 统一Chat Completions API（支持自动格式转换）
+      this.app.use('/', unifiedChatCompletionsRoutes) // 提供 /v1/chat/completions 统一端点
+
       this.app.use('/api', apiRoutes)
       this.app.use('/api', unifiedRoutes) // 统一智能路由（支持 /v1/chat/completions 等）
       this.app.use('/claude', apiRoutes) // /claude 路由别名，与 /api 功能相同
