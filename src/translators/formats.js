@@ -24,19 +24,19 @@ const Formats = {
 
 // 格式别名映射（用于识别）
 const FormatAliases = {
-  'anthropic': Formats.CLAUDE,
-  'claude': Formats.CLAUDE,
+  anthropic: Formats.CLAUDE,
+  claude: Formats.CLAUDE,
   'claude-code': Formats.CLAUDE,
 
-  'google': Formats.GEMINI,
-  'gemini': Formats.GEMINI,
+  google: Formats.GEMINI,
+  gemini: Formats.GEMINI,
   'gemini-api': Formats.GEMINI,
 
-  'openai': Formats.OPENAI_CHAT,
-  'gpt': Formats.OPENAI_CHAT,
-  'chatgpt': Formats.OPENAI_CHAT,
+  openai: Formats.OPENAI_CHAT,
+  gpt: Formats.OPENAI_CHAT,
+  chatgpt: Formats.OPENAI_CHAT,
 
-  'codex': Formats.CODEX
+  codex: Formats.CODEX
 }
 
 /**

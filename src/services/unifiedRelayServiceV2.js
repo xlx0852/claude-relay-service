@@ -1,10 +1,9 @@
 const authManager = require('./authManager')
-const { Formats } = require('../translators')
 const logger = require('../utils/logger')
 
 /**
  * 统一转发服务 V2 (使用AuthManager架构)
- * 
+ *
  * 重构说明：
  * - 使用AuthManager统一管理所有执行
  * - 移除手动if-else判断
@@ -26,7 +25,7 @@ class UnifiedRelayServiceV2 {
 
   /**
    * 统一转发请求入口（简化版）
-   * 
+   *
    * @param {string} clientFormat - 客户端格式
    * @param {Object} requestBody - 请求体
    * @param {Object} apiKeyData - API Key数据
@@ -44,8 +43,7 @@ class UnifiedRelayServiceV2 {
   ) {
     const startTime = Date.now()
     this.stats.totalRequests++
-    this.stats.byClientFormat[clientFormat] = 
-      (this.stats.byClientFormat[clientFormat] || 0) + 1
+    this.stats.byClientFormat[clientFormat] = (this.stats.byClientFormat[clientFormat] || 0) + 1
 
     try {
       logger.info('🌐 UnifiedRelay V2: Request started', {
@@ -70,7 +68,7 @@ class UnifiedRelayServiceV2 {
         payload: requestBody,
         metadata: {
           apiKeyName: apiKeyData.name,
-          clientFormat: clientFormat
+          clientFormat
         }
       }
 
@@ -124,20 +122,9 @@ class UnifiedRelayServiceV2 {
    * 处理非流式响应（极简版）
    * @private
    */
-  async _handleNonStreamResponse(
-    providers,
-    request,
-    options,
-    apiKeyData,
-    clientResponse
-  ) {
+  async _handleNonStreamResponse(providers, request, options, apiKeyData, clientResponse) {
     // AuthManager自动：选择provider、翻译请求、执行、翻译响应
-    const response = await this.authManager.execute(
-      providers,
-      request,
-      options,
-      apiKeyData
-    )
+    const response = await this.authManager.execute(providers, request, options, apiKeyData)
 
     // 直接返回，已经翻译好了！
     if (!clientResponse.headersSent) {
@@ -149,13 +136,7 @@ class UnifiedRelayServiceV2 {
    * 处理流式响应（极简版）
    * @private
    */
-  async _handleStreamResponse(
-    providers,
-    request,
-    options,
-    apiKeyData,
-    clientResponse
-  ) {
+  async _handleStreamResponse(providers, request, options, apiKeyData, clientResponse) {
     // 设置SSE响应头
     clientResponse.setHeader('Content-Type', 'text/event-stream')
     clientResponse.setHeader('Cache-Control', 'no-cache')
@@ -164,25 +145,20 @@ class UnifiedRelayServiceV2 {
 
     try {
       // AuthManager自动处理流式响应
-      const stream = this.authManager.executeStream(
-        providers,
-        request,
-        options,
-        apiKeyData
-      )
+      const stream = this.authManager.executeStream(providers, request, options, apiKeyData)
 
       // 逐chunk写入response
       for await (const chunk of stream) {
         if (!clientResponse.write(chunk)) {
           // 背压处理
-          await new Promise(resolve => clientResponse.once('drain', resolve))
+          await new Promise((resolve) => clientResponse.once('drain', resolve))
         }
       }
 
       clientResponse.end()
     } catch (error) {
       logger.error('UnifiedRelay V2: Stream error', { error: error.message })
-      
+
       if (!clientResponse.headersSent) {
         clientResponse.status(500).json({
           error: {

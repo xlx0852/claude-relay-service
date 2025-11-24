@@ -46,7 +46,7 @@ function registerAllTranslators() {
     // ============================================
     // 未来可以添加更多翻译器
     // ============================================
-    
+
     // TODO: Claude ↔ Gemini
     // TODO: OpenAI ↔ Gemini
     // TODO: Codex支持

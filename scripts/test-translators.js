@@ -3,8 +3,6 @@
  * 用于验证翻译器注册表和各个翻译器的功能
  */
 
-const path = require('path')
-
 // 设置环境变量
 process.env.NODE_ENV = 'development'
 process.env.LOG_LEVEL = 'debug'
@@ -144,7 +142,10 @@ function testRequestTranslation() {
     console.log('✅ Translation successful')
     console.log('Original messages count:', testCases.claudeRequest.messages.length)
     console.log('Translated messages count:', translated.messages.length)
-    console.log('Has system message:', translated.messages.some((m) => m.role === 'system'))
+    console.log(
+      'Has system message:',
+      translated.messages.some((m) => m.role === 'system')
+    )
     console.log('Model:', translated.model)
     console.log('Max tokens:', translated.max_tokens)
     console.log()

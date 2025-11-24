@@ -3,13 +3,13 @@ const logger = require('../utils/logger')
 /**
  * Executor基类
  * 定义所有AI服务提供商执行器的统一接口
- * 
+ *
  * 设计理念：
  * - 所有executor必须实现相同的接口
  * - 统一的错误处理机制
  * - 统一的参数和返回值格式
  * - 支持流式和非流式两种模式
- * 
+ *
  * 参考Go实现：sdk/cliproxy/executor/executor.go
  */
 
@@ -70,7 +70,7 @@ class BaseExecutor {
    * @param {Object} apiKeyData - API Key数据
    * @returns {Promise<ExecutorResponse>} 响应对象
    */
-  async execute(request, options, apiKeyData) {
+  async execute(_request, _options, _apiKeyData) {
     throw new Error(`${this.name}: execute() must be implemented by subclass`)
   }
 
@@ -81,7 +81,7 @@ class BaseExecutor {
    * @param {Object} apiKeyData - API Key数据
    * @returns {AsyncGenerator<ExecutorStreamChunk>} 流数据生成器
    */
-  async *executeStream(request, options, apiKeyData) {
+  async executeStream(_request, _options, _apiKeyData) {
     throw new Error(`${this.name}: executeStream() must be implemented by subclass`)
   }
 
@@ -117,7 +117,7 @@ class BaseExecutor {
       })
 
       const result = await fn()
-      
+
       const duration = Date.now() - startTime
       this.stats.successRequests++
       this.stats.totalDuration += duration
@@ -146,12 +146,7 @@ class BaseExecutor {
       })
 
       // 包装错误，添加executor信息
-      const wrappedError = new ExecutorError(
-        error.message,
-        this.name,
-        this.format,
-        error
-      )
+      const wrappedError = new ExecutorError(error.message, this.name, this.format, error)
       wrappedError.statusCode = error.statusCode || error.status || 500
       throw wrappedError
     }
@@ -167,12 +162,14 @@ class BaseExecutor {
       format: this.format,
       stats: {
         ...this.stats,
-        successRate: this.stats.totalRequests > 0 
-          ? ((this.stats.successRequests / this.stats.totalRequests) * 100).toFixed(2) + '%'
-          : '0%',
-        avgDuration: this.stats.successRequests > 0
-          ? Math.round(this.stats.totalDuration / this.stats.successRequests) + 'ms'
-          : '0ms'
+        successRate:
+          this.stats.totalRequests > 0
+            ? `${((this.stats.successRequests / this.stats.totalRequests) * 100).toFixed(2)}%`
+            : '0%',
+        avgDuration:
+          this.stats.successRequests > 0
+            ? `${Math.round(this.stats.totalDuration / this.stats.successRequests)}ms`
+            : '0ms'
       }
     }
   }

@@ -6,27 +6,23 @@ const logger = require('../utils/logger')
 
 /**
  * AuthManager - 统一认证和执行管理器
- * 
+ *
  * 核心职责：
  * 1. 管理所有Executor实例
  * 2. 自动选择可用的Provider
  * 3. 自动翻译请求/响应格式
  * 4. 实现重试和故障切换
  * 5. 统一错误处理
- * 
+ *
  * 对标Go实现：sdk/cliproxy/auth/manager.go
  */
 class AuthManager {
   constructor() {
     // Executor注册表
     this.executors = new Map()
-    
+
     // Provider优先级配置
-    this.providerPriority = [
-      Formats.CLAUDE,
-      Formats.GEMINI,
-      Formats.OPENAI_CHAT
-    ]
+    this.providerPriority = [Formats.CLAUDE, Formats.GEMINI, Formats.OPENAI_CHAT]
 
     // 重试配置
     this.retryConfig = {
@@ -56,7 +52,7 @@ class AuthManager {
     this.registerExecutor(Formats.CLAUDE, new ClaudeExecutor())
     this.registerExecutor(Formats.GEMINI, new GeminiExecutor())
     this.registerExecutor(Formats.OPENAI_CHAT, new OpenAIExecutor())
-    
+
     logger.info('🔧 AuthManager: Default executors registered', {
       executors: Array.from(this.executors.keys())
     })
@@ -83,7 +79,7 @@ class AuthManager {
 
   /**
    * 执行非流式请求（核心方法）
-   * 
+   *
    * @param {Array<string>} providers - Provider格式列表，按优先级排序
    * @param {Object} request - 请求对象
    * @param {string} request.model - 模型名称
@@ -101,7 +97,7 @@ class AuthManager {
     const startTime = Date.now()
 
     logger.info('🚀 AuthManager: Executing request', {
-      providers: providers,
+      providers,
       sourceFormat: options.sourceFormat,
       model: request.model,
       stream: options.stream
@@ -118,7 +114,7 @@ class AuthManager {
     // 遍历providers，尝试执行
     for (const providerFormat of providers) {
       const executor = this.executors.get(providerFormat)
-      
+
       if (!executor) {
         logger.warn(`AuthManager: No executor found for provider: ${providerFormat}`)
         continue
@@ -155,14 +151,10 @@ class AuthManager {
           // 执行请求
           logger.debug(`AuthManager: Executing on ${providerFormat}`, {
             attempt: attemptCount,
-            retry: retry
+            retry
           })
 
-          const response = await executor.execute(
-            translatedRequest,
-            options,
-            apiKeyData
-          )
+          const response = await executor.execute(translatedRequest, options, apiKeyData)
 
           // 翻译响应格式
           const translatedResponse = this._translateResponse(
@@ -170,8 +162,7 @@ class AuthManager {
             providerFormat,
             response,
             request,
-            translatedRequest,
-            options
+            translatedRequest
           )
 
           const duration = Date.now() - startTime
@@ -186,10 +177,10 @@ class AuthManager {
           return translatedResponse
         } catch (error) {
           lastError = error
-          
+
           // 判断是否应该重试
           const shouldRetry = this._shouldRetry(error, retry)
-          
+
           if (shouldRetry) {
             logger.warn(`AuthManager: Retryable error on ${providerFormat}`, {
               error: error.message,
@@ -198,10 +189,13 @@ class AuthManager {
             })
             continue // 重试当前provider
           } else {
-            logger.warn(`AuthManager: Non-retryable error on ${providerFormat}, switching provider`, {
-              error: error.message,
-              statusCode: error.statusCode
-            })
+            logger.warn(
+              `AuthManager: Non-retryable error on ${providerFormat}, switching provider`,
+              {
+                error: error.message,
+                statusCode: error.statusCode
+              }
+            )
             break // 切换到下一个provider
           }
         }
@@ -213,14 +207,14 @@ class AuthManager {
     const duration = Date.now() - startTime
 
     logger.error('❌ AuthManager: All providers failed', {
-      providers: providers,
+      providers,
       attempts: attemptCount,
       duration: `${duration}ms`,
       lastError: lastError?.message
     })
 
     throw new Error(
-      lastError 
+      lastError
         ? `All providers failed. Last error: ${lastError.message}`
         : 'All providers failed with no error details'
     )
@@ -228,7 +222,7 @@ class AuthManager {
 
   /**
    * 执行流式请求
-   * 
+   *
    * @param {Array<string>} providers - Provider格式列表
    * @param {Object} request - 请求对象
    * @param {Object} options - 选项
@@ -239,7 +233,7 @@ class AuthManager {
     this.stats.totalExecutions++
 
     logger.info('🌊 AuthManager: Executing stream request', {
-      providers: providers,
+      providers,
       sourceFormat: options.sourceFormat,
       model: request.model
     })
@@ -254,7 +248,7 @@ class AuthManager {
     // 遍历providers
     for (const providerFormat of providers) {
       const executor = this.executors.get(providerFormat)
-      
+
       if (!executor) {
         logger.warn(`AuthManager: No executor found for provider: ${providerFormat}`)
         continue
@@ -300,7 +294,7 @@ class AuthManager {
             {
               model: request.model,
               originalRequest: options.originalRequest,
-              translatedRequest: translatedRequest,
+              translatedRequest,
               rawResponse: chunk.data
             }
           )
@@ -332,7 +326,7 @@ class AuthManager {
 
   /**
    * 获取可用的providers列表
-   * 
+   *
    * @param {Object} apiKeyData - API Key数据
    * @returns {Promise<Array<string>>} Provider格式列表
    */
@@ -354,7 +348,7 @@ class AuthManager {
     // 按优先级检查所有providers
     for (const format of this.providerPriority) {
       const executor = this.executors.get(format)
-      if (executor && await executor.isAvailable()) {
+      if (executor && (await executor.isAvailable())) {
         availableProviders.push(format)
       }
     }
@@ -372,16 +366,12 @@ class AuthManager {
       return request // 无需翻译
     }
 
-    const translatedPayload = registry.translateRequest(
-      sourceFormat,
-      targetFormat,
-      {
-        model: request.model,
-        rawRequest: request.payload,
-        stream: options.stream,
-        metadata: request.metadata
-      }
-    )
+    const translatedPayload = registry.translateRequest(sourceFormat, targetFormat, {
+      model: request.model,
+      rawRequest: request.payload,
+      stream: options.stream,
+      metadata: request.metadata
+    })
 
     return {
       model: request.model,
@@ -394,22 +384,18 @@ class AuthManager {
    * 翻译响应格式
    * @private
    */
-  _translateResponse(sourceFormat, targetFormat, response, originalRequest, translatedRequest, options) {
+  _translateResponse(sourceFormat, targetFormat, response, originalRequest, translatedRequest) {
     if (sourceFormat === targetFormat) {
       return response.payload // 无需翻译
     }
 
-    return registry.translateNonStreamResponse(
-      sourceFormat,
-      targetFormat,
-      {
-        model: originalRequest.model,
-        originalRequest: originalRequest.payload,
-        translatedRequest: translatedRequest.payload,
-        rawResponse: response.payload,
-        metadata: response.metadata
-      }
-    )
+    return registry.translateNonStreamResponse(sourceFormat, targetFormat, {
+      model: originalRequest.model,
+      originalRequest: originalRequest.payload,
+      translatedRequest: translatedRequest.payload,
+      rawResponse: response.payload,
+      metadata: response.metadata
+    })
   }
 
   /**
@@ -422,8 +408,7 @@ class AuthManager {
     }
 
     // 检查状态码
-    if (error.statusCode && 
-        this.retryConfig.retryableStatusCodes.includes(error.statusCode)) {
+    if (error.statusCode && this.retryConfig.retryableStatusCodes.includes(error.statusCode)) {
       return true
     }
 
@@ -442,9 +427,9 @@ class AuthManager {
    */
   _accountTypeToFormat(type) {
     const mapping = {
-      'claude': Formats.CLAUDE,
-      'gemini': Formats.GEMINI,
-      'openai': Formats.OPENAI_CHAT
+      claude: Formats.CLAUDE,
+      gemini: Formats.GEMINI,
+      openai: Formats.OPENAI_CHAT
     }
     return mapping[type] || null
   }
@@ -454,7 +439,7 @@ class AuthManager {
    * @private
    */
   _sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   /**
@@ -469,9 +454,10 @@ class AuthManager {
     return {
       authManager: {
         ...this.stats,
-        successRate: this.stats.totalExecutions > 0
-          ? ((this.stats.successExecutions / this.stats.totalExecutions) * 100).toFixed(2) + '%'
-          : '0%'
+        successRate:
+          this.stats.totalExecutions > 0
+            ? `${((this.stats.successExecutions / this.stats.totalExecutions) * 100).toFixed(2)}%`
+            : '0%'
       },
       executors: executorStats
     }

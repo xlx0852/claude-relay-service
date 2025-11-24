@@ -2,7 +2,6 @@ const { BaseExecutor } = require('./baseExecutor')
 const { Formats } = require('../translators')
 const geminiAccountService = require('../services/geminiAccountService')
 const geminiRelayService = require('../services/geminiRelayService')
-const logger = require('../utils/logger')
 
 // 注意：GeminiExecutor复用geminiRelayService，
 // geminiRelayService内部已经调用apiKeyService.recordUsage()
@@ -38,22 +37,26 @@ class GeminiExecutor extends BaseExecutor {
   async execute(request, options, apiKeyData) {
     this._validateRequest(request, options)
 
-    return this._wrapExecute(async () => {
-      // 调用现有的geminiRelayService
-      const response = await geminiRelayService.relayRequest(
-        request.payload,
-        apiKeyData,
-        false, // non-stream
-        null
-      )
+    return this._wrapExecute(
+      async () => {
+        // 调用现有的geminiRelayService
+        const response = await geminiRelayService.relayRequest(
+          request.payload,
+          apiKeyData,
+          false, // non-stream
+          null
+        )
 
-      return {
-        payload: response,
-        metadata: {
-          usage: response.usageMetadata
+        return {
+          payload: response,
+          metadata: {
+            usage: response.usageMetadata
+          }
         }
-      }
-    }, request, options)
+      },
+      request,
+      options
+    )
   }
 
   async *executeStream(request, options, apiKeyData) {

@@ -3,7 +3,7 @@ const logger = require('../utils/logger')
 
 /**
  * 客户端格式检测中间件
- * 
+ *
  * 检测策略：
  * 1. 检查 X-Client-Format header
  * 2. 检查 User-Agent 识别客户端类型
@@ -125,16 +125,21 @@ function detectFormatFromRequestBody(body) {
   }
 
   // Claude格式特征
-  if (body.system !== undefined || 
-      (body.messages && Array.isArray(body.messages) && 
-       body.messages.some(m => Array.isArray(m.content)))) {
+  if (
+    body.system !== undefined ||
+    (body.messages &&
+      Array.isArray(body.messages) &&
+      body.messages.some((m) => Array.isArray(m.content)))
+  ) {
     return Formats.CLAUDE
   }
 
   // Gemini格式特征
-  if (body.contents !== undefined || 
-      body.systemInstruction !== undefined ||
-      body.generationConfig !== undefined) {
+  if (
+    body.contents !== undefined ||
+    body.systemInstruction !== undefined ||
+    body.generationConfig !== undefined
+  ) {
     return Formats.GEMINI
   }
 

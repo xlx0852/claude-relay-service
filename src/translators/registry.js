@@ -4,11 +4,11 @@ const { TranslationError } = require('./types')
 /**
  * 翻译器注册表类
  * 负责管理所有格式之间的请求和响应翻译器
- * 
+ *
  * 架构说明：
  * - 请求翻译器：从客户端格式 → 服务端格式
  * - 响应翻译器：从服务端格式 → 客户端格式
- * 
+ *
  * 存储结构：
  * requestTranslators: Map<fromFormat, Map<toFormat, translatorFunction>>
  * responseTranslators: Map<clientFormat, Map<serverFormat, { stream, nonStream }>>
@@ -184,9 +184,7 @@ class TranslatorRegistry {
       const duration = Date.now() - startTime
 
       this.stats.streamTranslations++
-      logger.debug(
-        `🔄 Translated stream chunk: ${serverFormat} → ${clientFormat} (${duration}ms)`
-      )
+      logger.debug(`🔄 Translated stream chunk: ${serverFormat} → ${clientFormat} (${duration}ms)`)
 
       return Array.isArray(translated) ? translated : [translated]
     } catch (error) {
@@ -248,13 +246,10 @@ class TranslatorRegistry {
       return translated
     } catch (error) {
       this.stats.errors++
-      logger.error(
-        `❌ Non-stream response translation failed: ${serverFormat} → ${clientFormat}`,
-        {
-          error: error.message,
-          stack: error.stack
-        }
-      )
+      logger.error(`❌ Non-stream response translation failed: ${serverFormat} → ${clientFormat}`, {
+        error: error.message,
+        stack: error.stack
+      })
 
       throw new TranslationError(
         `Failed to translate response from ${serverFormat} to ${clientFormat}: ${error.message}`,
@@ -301,15 +296,23 @@ class TranslatorRegistry {
     logger.info('╔════════════════════════════════════════════════════════════════╗')
     logger.info('║          📊 Translator Registry Statistics                    ║')
     logger.info('╠════════════════════════════════════════════════════════════════╣')
-    logger.info(`║  Request Translators:      ${String(this.stats.requestTranslators).padStart(4)} registered          ║`)
-    logger.info(`║  Response Translators:     ${String(this.stats.responseTranslators).padStart(4)} registered          ║`)
+    logger.info(
+      `║  Request Translators:      ${String(this.stats.requestTranslators).padStart(4)} registered          ║`
+    )
+    logger.info(
+      `║  Response Translators:     ${String(this.stats.responseTranslators).padStart(4)} registered          ║`
+    )
     logger.info('╠════════════════════════════════════════════════════════════════╣')
-    logger.info(`║  Request Paths (${paths.request.length}):                                         ║`)
+    logger.info(
+      `║  Request Paths (${paths.request.length}):                                         ║`
+    )
     paths.request.forEach((path) => {
       logger.info(`║    • ${path.padEnd(54)} ║`)
     })
     logger.info('╠════════════════════════════════════════════════════════════════╣')
-    logger.info(`║  Response Paths (${paths.response.length}):                                        ║`)
+    logger.info(
+      `║  Response Paths (${paths.response.length}):                                        ║`
+    )
     paths.response.forEach((path) => {
       logger.info(`║    • ${path.padEnd(54)} ║`)
     })

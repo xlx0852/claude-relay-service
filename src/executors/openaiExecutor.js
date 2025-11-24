@@ -4,7 +4,7 @@ const openaiAccountService = require('../services/openaiResponsesAccountService'
 const openaiRelayService = require('../services/openaiResponsesRelayService')
 
 /**
- * OpenAI Executor  
+ * OpenAI Executor
  * 负责执行对OpenAI API的请求
  */
 class OpenAIExecutor extends BaseExecutor {
@@ -33,33 +33,32 @@ class OpenAIExecutor extends BaseExecutor {
   async execute(request, options, apiKeyData) {
     this._validateRequest(request, options)
 
-    return this._wrapExecute(async () => {
-      const response = await openaiRelayService.relayRequest(
-        request.payload,
-        apiKeyData,
-        false,
-        null
-      )
+    return this._wrapExecute(
+      async () => {
+        const response = await openaiRelayService.relayRequest(
+          request.payload,
+          apiKeyData,
+          false,
+          null
+        )
 
-      return {
-        payload: response,
-        metadata: {
-          usage: response.usage
+        return {
+          payload: response,
+          metadata: {
+            usage: response.usage
+          }
         }
-      }
-    }, request, options)
+      },
+      request,
+      options
+    )
   }
 
   async *executeStream(request, options, apiKeyData) {
     this._validateRequest(request, options)
 
     try {
-      const stream = await openaiRelayService.relayRequest(
-        request.payload,
-        apiKeyData,
-        true,
-        null
-      )
+      const stream = await openaiRelayService.relayRequest(request.payload, apiKeyData, true, null)
 
       for await (const chunk of stream) {
         yield {

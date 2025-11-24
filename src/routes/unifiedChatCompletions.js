@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const unifiedRelayService = require('../services/unifiedRelayServiceV2') // 使用V2架构
 const { detectClientFormat, validateRequestFormat } = require('../middleware/formatDetector')
-const { verifyApiKey } = require('../middleware/auth')
+const { authenticateApiKey } = require('../middleware/auth')
 const logger = require('../utils/logger')
 
 /**
@@ -38,7 +38,7 @@ const logger = require('../utils/logger')
  */
 router.post(
   '/v1/chat/completions',
-  verifyApiKey, // 1. 验证API Key
+  authenticateApiKey, // 1. 验证API Key
   detectClientFormat, // 2. 检测客户端格式
   validateRequestFormat, // 3. 验证请求格式
   async (req, res) => {
@@ -101,7 +101,7 @@ router.post(
  * GET /v1/models
  * 列出所有可用模型（兼容OpenAI API）
  */
-router.get('/v1/models', verifyApiKey, async (req, res) => {
+router.get('/v1/models', authenticateApiKey, async (req, res) => {
   try {
     // 返回一个虚拟的模型列表
     // 实际使用中，这些模型会被自动路由到可用的服务提供商
@@ -172,7 +172,7 @@ router.get('/v1/models', verifyApiKey, async (req, res) => {
  * GET /v1/chat/completions/stats
  * 获取统一转发服务的统计信息（需要管理员权限）
  */
-router.get('/v1/chat/completions/stats', verifyApiKey, (req, res) => {
+router.get('/v1/chat/completions/stats', authenticateApiKey, (req, res) => {
   try {
     // TODO: 添加管理员权限检查
     const stats = unifiedRelayService.getStats()
@@ -195,7 +195,7 @@ router.get('/v1/chat/completions/stats', verifyApiKey, (req, res) => {
  * POST /v1/chat/completions/stats/reset
  * 重置统计信息（需要管理员权限）
  */
-router.post('/v1/chat/completions/stats/reset', verifyApiKey, (req, res) => {
+router.post('/v1/chat/completions/stats/reset', authenticateApiKey, (req, res) => {
   try {
     // TODO: 添加管理员权限检查
     unifiedRelayService.resetStats()

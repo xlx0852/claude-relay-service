@@ -29,11 +29,11 @@
 /**
  * 请求翻译器函数类型
  * 将源格式的请求转换为目标格式
- * 
+ *
  * @callback RequestTranslator
  * @param {TranslateRequestOptions} options - 翻译选项
  * @returns {Object} 翻译后的请求对象
- * 
+ *
  * @example
  * // OpenAI → Claude
  * function translateOpenAIToClaude({ model, rawRequest, stream }) {
@@ -49,11 +49,11 @@
 /**
  * 流式响应翻译器函数类型
  * 将服务端的流式响应chunk转换为客户端格式
- * 
+ *
  * @callback StreamResponseTranslator
  * @param {TranslateResponseOptions} options - 翻译选项
  * @returns {string[]} SSE格式的响应数组，每个元素是一个完整的SSE事件
- * 
+ *
  * @example
  * // Claude stream → OpenAI stream
  * function translateClaudeStreamToOpenAI({ rawResponse }) {
@@ -65,11 +65,11 @@
 /**
  * 非流式响应翻译器函数类型
  * 将服务端的完整响应转换为客户端格式
- * 
+ *
  * @callback NonStreamResponseTranslator
  * @param {TranslateResponseOptions} options - 翻译选项
  * @returns {Object} 翻译后的响应对象
- * 
+ *
  * @example
  * // Claude response → OpenAI response
  * function translateClaudeToOpenAI({ rawResponse }) {

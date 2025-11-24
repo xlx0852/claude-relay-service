@@ -9,7 +9,6 @@ const claudeAccountService = require('./claudeAccountService')
 const geminiAccountService = require('./geminiAccountService')
 const openaiAccountService = require('./openaiResponsesAccountService')
 const logger = require('../utils/logger')
-const { Readable } = require('stream')
 
 /**
  * 统一转发服务
@@ -48,7 +47,14 @@ class UnifiedRelayService {
    * @param {Object} options - 额外选项
    * @returns {Promise<void>}
    */
-  async relayRequest(clientFormat, requestBody, apiKeyData, clientRequest, clientResponse, options = {}) {
+  async relayRequest(
+    clientFormat,
+    requestBody,
+    apiKeyData,
+    clientRequest,
+    clientResponse,
+    _options = {}
+  ) {
     const startTime = Date.now()
     this.stats.totalRequests++
     this.stats.byClientFormat[clientFormat] = (this.stats.byClientFormat[clientFormat] || 0) + 1
@@ -65,12 +71,12 @@ class UnifiedRelayService {
       const targetProvider = await this.selectTargetProvider(apiKeyData, requestBody.model)
       logger.info(`🎯 Selected target provider: ${targetProvider.name} (${targetProvider.format})`)
 
-      this.stats.byServerFormat[targetProvider.format] = 
+      this.stats.byServerFormat[targetProvider.format] =
         (this.stats.byServerFormat[targetProvider.format] || 0) + 1
 
       // 2. 翻译请求格式（如果需要）
       let translatedRequest = requestBody
-      let needsTranslation = clientFormat !== targetProvider.format
+      const needsTranslation = clientFormat !== targetProvider.format
 
       if (needsTranslation) {
         translatedRequest = registry.translateRequest(clientFormat, targetProvider.format, {
@@ -141,7 +147,7 @@ class UnifiedRelayService {
    * @param {string} model - 请求的模型名称
    * @returns {Promise<Object>} 目标提供商信息
    */
-  async selectTargetProvider(apiKeyData, model) {
+  async selectTargetProvider(apiKeyData, _model) {
     // 检查API Key是否有专属绑定
     if (apiKeyData.dedicatedAccounts && apiKeyData.dedicatedAccounts.length > 0) {
       const dedicatedAccount = apiKeyData.dedicatedAccounts[0]
@@ -163,7 +169,7 @@ class UnifiedRelayService {
     // 按优先级检查可用提供商
     for (const provider of this.providerPriority) {
       const isAvailable = await this.checkProviderAvailability(provider.format)
-      
+
       if (isAvailable) {
         const providerInfo = this.getProviderInfo(provider.format)
         logger.debug(`✅ Provider ${provider.name} is available`)
@@ -184,18 +190,18 @@ class UnifiedRelayService {
   async checkProviderAvailability(format) {
     try {
       switch (format) {
-        case Formats.CLAUDE:
+        case Formats.CLAUDE: {
           const claudeAccounts = await claudeAccountService.getActiveAccounts()
           return claudeAccounts && claudeAccounts.length > 0
-
-        case Formats.GEMINI:
+        }
+        case Formats.GEMINI: {
           const geminiAccounts = await geminiAccountService.getActiveAccounts()
           return geminiAccounts && geminiAccounts.length > 0
-
-        case Formats.OPENAI_CHAT:
+        }
+        case Formats.OPENAI_CHAT: {
           const openaiAccounts = await openaiAccountService.getActiveAccounts()
           return openaiAccounts && openaiAccounts.length > 0
-
+        }
         default:
           return false
       }
@@ -319,7 +325,7 @@ class UnifiedRelayService {
     clientResponse,
     needsTranslation
   ) {
-    const result = await claudeRelayService.relayRequest(
+    await claudeRelayService.relayRequest(
       translatedRequest,
       apiKeyData,
       clientRequest,
@@ -366,8 +372,8 @@ class UnifiedRelayService {
           targetProvider.format,
           {
             model: originalRequest.model,
-            originalRequest: originalRequest,
-            translatedRequest: translatedRequest,
+            originalRequest,
+            translatedRequest,
             rawResponse: chunk
           }
         )
@@ -442,16 +448,12 @@ class UnifiedRelayService {
       let finalResponse = serverResponse
 
       if (needsTranslation) {
-        finalResponse = registry.translateNonStreamResponse(
-          clientFormat,
-          targetProvider.format,
-          {
-            model: originalRequest.model,
-            originalRequest: originalRequest,
-            translatedRequest: translatedRequest,
-            rawResponse: serverResponse
-          }
-        )
+        finalResponse = registry.translateNonStreamResponse(clientFormat, targetProvider.format, {
+          model: originalRequest.model,
+          originalRequest,
+          translatedRequest,
+          rawResponse: serverResponse
+        })
         logger.debug(`🔄 Response translated: ${targetProvider.format} → ${clientFormat}`)
       }
 
@@ -480,9 +482,10 @@ class UnifiedRelayService {
   getStats() {
     return {
       ...this.stats,
-      translationRate: this.stats.totalRequests > 0 
-        ? (this.stats.translationCount / this.stats.totalRequests * 100).toFixed(2) + '%'
-        : '0%'
+      translationRate:
+        this.stats.totalRequests > 0
+          ? `${((this.stats.translationCount / this.stats.totalRequests) * 100).toFixed(2)}%`
+          : '0%'
     }
   }
 

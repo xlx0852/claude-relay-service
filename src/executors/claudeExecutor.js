@@ -2,7 +2,6 @@ const { BaseExecutor } = require('./baseExecutor')
 const { Formats } = require('../translators')
 const claudeAccountService = require('../services/claudeAccountService')
 const unifiedClaudeScheduler = require('../services/unifiedClaudeScheduler')
-const apiKeyService = require('../services/apiKeyService')
 const logger = require('../utils/logger')
 const https = require('https')
 const { HttpsProxyAgent } = require('https-proxy-agent')
@@ -12,7 +11,7 @@ const config = require('../../config/config')
 /**
  * Claude Executor
  * 负责执行对Claude API的请求
- * 
+ *
  * 特点：
  * - 支持多账户轮询
  * - 支持专属账户绑定
@@ -58,26 +57,30 @@ class ClaudeExecutor extends BaseExecutor {
   async execute(request, options, apiKeyData) {
     this._validateRequest(request, options)
 
-    return this._wrapExecute(async () => {
-      // 选择账户
-      const account = await this._selectAccount(apiKeyData, request.model)
+    return this._wrapExecute(
+      async () => {
+        // 选择账户
+        const account = await this._selectAccount(apiKeyData, request.model)
 
-      // 发送请求
-      const response = await this._sendRequest(account, request.payload, false)
+        // 发送请求
+        const response = await this._sendRequest(account, request.payload, false)
 
-      // 🔔 记录计费和统计（非流式）
-      if (response.usage && apiKeyData?.id) {
-        await this._recordUsage(apiKeyData.id, response.usage, request.model, account.accountId)
-      }
-
-      return {
-        payload: response,
-        metadata: {
-          accountId: account.accountId,
-          usage: response.usage
+        // 🔔 记录计费和统计（非流式）
+        if (response.usage && apiKeyData?.id) {
+          await this._recordUsage(apiKeyData.id, response.usage, request.model, account.accountId)
         }
-      }
-    }, request, options)
+
+        return {
+          payload: response,
+          metadata: {
+            accountId: account.accountId,
+            usage: response.usage
+          }
+        }
+      },
+      request,
+      options
+    )
   }
 
   /**
@@ -123,7 +126,7 @@ class ClaudeExecutor extends BaseExecutor {
     } catch (error) {
       logger.error(`${this.name}: Stream failed`, { error: error.message })
       yield {
-        error: error,
+        error,
         done: true
       }
     }
@@ -136,9 +139,7 @@ class ClaudeExecutor extends BaseExecutor {
   async _selectAccount(apiKeyData, model) {
     // 检查是否有专属账户
     if (apiKeyData.dedicatedAccounts && apiKeyData.dedicatedAccounts.length > 0) {
-      const dedicatedAccount = apiKeyData.dedicatedAccounts.find(
-        acc => acc.type === 'claude'
-      )
+      const dedicatedAccount = apiKeyData.dedicatedAccounts.find((acc) => acc.type === 'claude')
       if (dedicatedAccount) {
         logger.debug(`${this.name}: Using dedicated account`, {
           accountId: dedicatedAccount.accountId
@@ -165,18 +166,18 @@ class ClaudeExecutor extends BaseExecutor {
     return new Promise((resolve, reject) => {
       const requestBody = {
         ...payload,
-        stream: stream
+        stream
       }
 
       const data = JSON.stringify(requestBody)
-      
+
       const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': Buffer.byteLength(data),
           'anthropic-version': this.apiVersion,
-          'authorization': `Bearer ${account.accessToken}`,
+          authorization: `Bearer ${account.accessToken}`,
           'anthropic-beta': this.betaHeader
         }
       }
@@ -226,21 +227,21 @@ class ClaudeExecutor extends BaseExecutor {
    * 发送流式请求到Claude API
    * @private
    */
-  async *_sendStreamRequest(account, payload) {
+  async _sendStreamRequest(account, payload) {
     const requestBody = {
       ...payload,
       stream: true
     }
 
     const data = JSON.stringify(requestBody)
-    
+
     const options = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(data),
         'anthropic-version': this.apiVersion,
-        'authorization': `Bearer ${account.accessToken}`,
+        authorization: `Bearer ${account.accessToken}`,
         'anthropic-beta': this.betaHeader
       }
     }
