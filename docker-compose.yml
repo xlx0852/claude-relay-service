@@ -96,7 +96,9 @@ services:
     #   - "127.0.0.1:${REDIS_PORT:-6379}:6379"
     volumes:
       - ./redis_data:/data
-    command: redis-server --save 60 1 --appendonly yes --appendfsync everysec
+      - ./config/redis-persistence.conf:/usr/local/etc/redis/redis.conf:ro
+    # 使用自定义配置文件（包含优化的持久化策略）
+    command: redis-server /usr/local/etc/redis/redis.conf
     networks:
       - claude-relay-network
     healthcheck:

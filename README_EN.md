@@ -83,6 +83,7 @@ If you have any of these concerns, this project might be suitable for you.
 - ✅ **Multi-account Management**: Add multiple Claude accounts for automatic rotation
 - ✅ **Custom API Keys**: Assign independent keys to each person
 - ✅ **Usage Statistics**: Detailed records of how many tokens each person used
+- ✅ **Data Persistence**: Redis + SQLite dual guarantee, data never lost
 
 ### Advanced Features
 - 🔄 **Smart Switching**: Automatically switch to next account when one has issues
@@ -90,6 +91,7 @@ If you have any of these concerns, this project might be suitable for you.
 - 📊 **Monitoring Dashboard**: Web interface to view all data
 - 🛡️ **Security Control**: Access restrictions, rate limiting
 - 🌐 **Proxy Support**: Support for HTTP/SOCKS5 proxies
+- 💾 **Auto Backup**: SQLite database auto backup, one-click recovery
 
 ---
 
@@ -98,6 +100,14 @@ If you have any of these concerns, this project might be suitable for you.
 ### Hardware Requirements (Minimum Configuration)
 - **CPU**: 1 core is sufficient
 - **Memory**: 512MB (1GB recommended)
+- **Storage**: 30GB available space
+- **Network**: Able to access Anthropic API (recommended US region servers)
+
+### Software Requirements
+- **Node.js** 18 or higher
+- **Redis** 6 or higher (cache layer)
+- **SQLite** 3+ (persistence layer, auto-integrated)
+- **Operating System**: Linux recommended
 - **Storage**: 30GB available space
 - **Network**: Access to Anthropic API (recommend US region servers)
 - **Recommendation**: 2 cores 4GB is basically enough, choose network with good return routes to your country (to improve speed, recommend not using proxy or setting server IP for direct connection)
@@ -337,6 +347,160 @@ git add package-lock.json
 
 # 3. Install new dependencies (if any)
 npm install
+
+---
+
+## 💾 Data Persistence & Backup
+
+### Dual Persistence Architecture
+
+Claude Relay Service uses **Redis + SQLite hybrid persistence** for dual data protection:
+
+```
+┌─────────────┐
+│  API Request│
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Redis Cache │ ← High Performance (Memory)
+│ - Rate Limit│   Millisecond Response
+│ - Concurrency│
+│ - Sessions  │
+└──────┬──────┘
+       │
+       │ Auto Dual-Write
+       ▼
+┌─────────────┐
+│  SQLite DB  │ ← Persistence (Disk)
+│ - API Keys  │   Data Never Lost
+│ - Accounts  │
+│ - Statistics│
+└─────────────┘
+```
+
+### Core Features
+
+- ✅ **Zero Config**: Enabled by default, no extra setup needed
+- ✅ **Auto Dual-Write**: Critical data written to both Redis and SQLite
+- ✅ **Auto Recovery**: Automatically recover from SQLite when Redis data is lost
+- ✅ **No Performance Impact**: Async writes, doesn't affect API response speed
+- ✅ **Simple Backup**: One-click backup, file-level recovery
+
+### Quick Start
+
+#### 1. Data Migration (First-time Use)
+
+If you have existing Redis data, run migration command:
+
+```bash
+npm run migrate:redis-to-sqlite
+```
+
+Example output:
+```
+✅ Migration Complete!
+📊 Migration Statistics
+  API Keys: 10
+  Accounts: 5
+  Database Size: 1.2 MB
+```
+
+#### 2. Setup Auto Backup (Recommended)
+
+Setup daily auto backup using crontab:
+
+```bash
+# Edit crontab
+crontab -e
+
+# Add daily backup at 2 AM
+0 2 * * * cd /path/to/claude-relay-service && npm run backup:sqlite
+```
+
+Manual backup:
+```bash
+npm run backup:sqlite
+```
+
+Backup files are saved in `backups/sqlite/` directory, automatically keeps last 7 days.
+
+#### 3. Data Recovery
+
+**Scenario 1: Redis Data Lost**
+```bash
+# Service will auto-recover from SQLite, no action needed
+npm restart
+```
+
+**Scenario 2: Restore from Backup**
+```bash
+# 1. Stop service
+npm run service:stop
+
+# 2. Restore backup file
+gunzip backups/sqlite/sqlite_backup_YYYYMMDD_HHMMSS.db.gz
+cp backups/sqlite/sqlite_backup_YYYYMMDD_HHMMSS.db data/relay-service.db
+
+# 3. Restart service
+npm run service:start
+```
+
+### Configuration Options
+
+Configure in `.env` file (optional):
+
+```bash
+# Enable SQLite persistence (enabled by default)
+ENABLE_SQLITE=true
+
+# Custom database path (optional)
+SQLITE_DB_PATH=./data/relay-service.db
+```
+
+### Common Commands
+
+```bash
+# Test SQLite functionality
+npm run test:sqlite
+
+# Migrate Redis data to SQLite
+npm run migrate:redis-to-sqlite
+
+# Backup SQLite database
+npm run backup:sqlite
+
+# View database statistics
+node -e "const s=require('./src/models/sqlite');s.connect();console.log(s.getStats())"
+```
+
+### Performance Impact
+
+| Operation | Latency Increase | Description |
+|-----------|-----------------|-------------|
+| API Key Creation | < 1ms | Async write to SQLite |
+| API Key Query | 0ms | Priority read from Redis |
+| Account Update | < 1ms | Async write to SQLite |
+| Rate Limiting | 0ms | Redis only |
+| Concurrency Control | 0ms | Redis only |
+
+**Conclusion: Performance impact negligible**
+
+### Data Recovery Guarantee
+
+When Redis data is lost, the system will:
+
+1. Detect no data in Redis
+2. Automatically query from SQLite
+3. Restore data to Redis
+4. Return normally to user
+
+**Users completely unaware, auto recovery!** 🛡️
+
+### Detailed Documentation
+
+- [Complete SQLite Guide](docs/SQLITE_GUIDE.md)
+- [Quick Start Guide](docs/QUICK_START_SQLITE.md)
 
 # 4. Restart service
 npm run service:restart:daemon

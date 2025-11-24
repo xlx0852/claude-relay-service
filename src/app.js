@@ -9,6 +9,7 @@ const bcrypt = require('bcryptjs')
 const config = require('../config/config')
 const logger = require('./utils/logger')
 const redis = require('./models/redis')
+const sqlite = require('./models/sqlite')
 const pricingService = require('./services/pricingService')
 const cacheMonitor = require('./utils/cacheMonitor')
 
@@ -52,6 +53,11 @@ class Application {
       logger.info('🔄 Connecting to Redis...')
       await redis.connect()
       logger.success('✅ Redis connected successfully')
+
+      // 🗄️  连接SQLite（持久化层）
+      logger.info('🔄 Connecting to SQLite...')
+      sqlite.connect()
+      logger.success('✅ SQLite connected successfully')
 
       // 💰 初始化价格服务
       logger.info('🔄 Initializing pricing service...')

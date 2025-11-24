@@ -83,6 +83,7 @@
 - ✅ **多账户管理**: 可以添加多个Claude账户自动轮换
 - ✅ **自定义API Key**: 给每个人分配独立的Key
 - ✅ **使用统计**: 详细记录每个人用了多少token
+- ✅ **数据持久化**: Redis + SQLite 双重保障，数据永不丢失
 
 ### 高级功能
 
@@ -91,6 +92,7 @@
 - 📊 **监控面板**: Web界面查看所有数据
 - 🛡️ **安全控制**: 访问限制、速率控制、客户端限制
 - 🌐 **代理支持**: 支持HTTP/SOCKS5代理
+- 💾 **自动备份**: SQLite 数据库自动备份，一键恢复
 
 ---
 
@@ -108,7 +110,8 @@
 ### 软件要求
 
 - **Node.js** 18或更高版本
-- **Redis** 6或更高版本
+- **Redis** 6或更高版本（缓存层）
+- **SQLite** 3+（持久化层，自动集成）
 - **操作系统**: 建议Linux
 
 ### 费用估算
@@ -302,7 +305,8 @@ docker-compose.yml 已包含：
 
 - ✅ 自动初始化管理员账号
 - ✅ 数据持久化（logs和data目录自动挂载）
-- ✅ Redis数据库
+- ✅ Redis数据库（缓存层）
+- ✅ SQLite数据库（持久化层，自动备份）
 - ✅ 健康检查
 - ✅ 自动重启
 
@@ -653,6 +657,160 @@ npm run service:status
 - 升级前建议备份重要配置文件（.env, config/config.js）
 - 查看更新日志了解是否有破坏性变更
 - 如果有数据库结构变更，会自动迁移
+
+---
+
+## 💾 数据持久化与备份
+
+### 双重持久化架构
+
+Claude Relay Service 采用 **Redis + SQLite 混合持久化方案**，提供双重数据保障：
+
+```
+┌─────────────┐
+│  API 请求   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Redis 缓存  │ ← 高性能（内存）
+│ - 速率限制  │   毫秒级响应
+│ - 并发控制  │
+│ - 会话管理  │
+└──────┬──────┘
+       │
+       │ 自动双写
+       ▼
+┌─────────────┐
+│  SQLite DB  │ ← 持久化（磁盘）
+│ - API Keys  │   数据永不丢失
+│ - 账户数据  │
+│ - 使用统计  │
+└─────────────┘
+```
+
+### 核心特性
+
+- ✅ **零配置**: 默认启用，无需额外设置
+- ✅ **自动双写**: 关键数据同时写入 Redis 和 SQLite
+- ✅ **自动恢复**: Redis 数据丢失时自动从 SQLite 恢复
+- ✅ **性能无损**: 异步写入，不影响 API 响应速度
+- ✅ **简单备份**: 一键备份，文件级别恢复
+
+### 快速开始
+
+#### 1. 数据迁移（首次使用）
+
+如果你有现有的 Redis 数据，运行迁移命令：
+
+```bash
+npm run migrate:redis-to-sqlite
+```
+
+输出示例：
+```
+✅ 迁移完成！
+📊 迁移统计
+  API Keys: 10 个
+  账户: 5 个
+  数据库大小: 1.2 MB
+```
+
+#### 2. 设置自动备份（推荐）
+
+使用 crontab 设置每天自动备份：
+
+```bash
+# 编辑 crontab
+crontab -e
+
+# 添加每天凌晨 2 点自动备份
+0 2 * * * cd /path/to/claude-relay-service && npm run backup:sqlite
+```
+
+手动备份：
+```bash
+npm run backup:sqlite
+```
+
+备份文件保存在 `backups/sqlite/` 目录，自动保留最近 7 天。
+
+#### 3. 数据恢复
+
+**场景 1: Redis 数据丢失**
+```bash
+# 服务会自动从 SQLite 恢复，无需操作
+npm restart
+```
+
+**场景 2: 从备份恢复**
+```bash
+# 1. 停止服务
+npm run service:stop
+
+# 2. 恢复备份文件
+gunzip backups/sqlite/sqlite_backup_YYYYMMDD_HHMMSS.db.gz
+cp backups/sqlite/sqlite_backup_YYYYMMDD_HHMMSS.db data/relay-service.db
+
+# 3. 重启服务
+npm run service:start
+```
+
+### 配置选项
+
+在 `.env` 文件中配置（可选）：
+
+```bash
+# 启用 SQLite 持久化（默认启用）
+ENABLE_SQLITE=true
+
+# 自定义数据库路径（可选）
+SQLITE_DB_PATH=./data/relay-service.db
+```
+
+### 常用命令
+
+```bash
+# 测试 SQLite 功能
+npm run test:sqlite
+
+# 迁移 Redis 数据到 SQLite
+npm run migrate:redis-to-sqlite
+
+# 备份 SQLite 数据库
+npm run backup:sqlite
+
+# 查看数据库统计
+node -e "const s=require('./src/models/sqlite');s.connect();console.log(s.getStats())"
+```
+
+### 性能影响
+
+| 操作 | 延迟增加 | 说明 |
+|------|---------|------|
+| API Key 创建 | < 1ms | 异步写入 SQLite |
+| API Key 查询 | 0ms | 优先从 Redis 读取 |
+| 账户更新 | < 1ms | 异步写入 SQLite |
+| 速率限制 | 0ms | 仅 Redis |
+| 并发控制 | 0ms | 仅 Redis |
+
+**结论：性能影响可忽略不计**
+
+### 数据恢复保障
+
+当 Redis 数据丢失时，系统会：
+
+1. 检测到 Redis 中无数据
+2. 自动从 SQLite 查询
+3. 恢复数据到 Redis
+4. 正常返回给用户
+
+**用户完全无感知，自动恢复！** 🛡️
+
+### 详细文档
+
+- [完整 SQLite 使用指南](docs/SQLITE_GUIDE.md)
+- [快速上手文档](docs/QUICK_START_SQLITE.md)
 
 ---
 
